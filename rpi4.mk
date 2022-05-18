@@ -14,9 +14,45 @@
 # limitations under the License.
 #
 
-$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit_only.mk)
-USE_OEM_TV_APP := true
-$(call inherit-product, device/google/atv/products/atv_base.mk)
+#$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit_only.mk)
+#USE_OEM_TV_APP := true
+#$(call inherit-product, device/google/atv/products/atv_base.mk)
+
+
+$(call inherit-product, $(SRC_TARGET_DIR)/product/core_64_bit.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/generic_system.mk)
+
+# Enable mainline checking for excat this product name
+ifeq (aosp_arm64,$(TARGET_PRODUCT))
+PRODUCT_ENFORCE_ARTIFACT_PATH_REQUIREMENTS := relaxed
+endif
+
+#
+# All components inherited here go to system_ext image
+#
+$(call inherit-product, $(SRC_TARGET_DIR)/product/handheld_system_ext.mk)
+$(call inherit-product, $(SRC_TARGET_DIR)/product/telephony_system_ext.mk)
+
+#
+# All components inherited here go to product image
+#
+$(call inherit-product, $(SRC_TARGET_DIR)/product/aosp_product.mk)
+
+#
+# All components inherited here go to vendor or vendor_boot image
+#
+#$(call inherit-product, $(SRC_TARGET_DIR)/product/emulator_vendor.mk)
+#$(call inherit-product, $(SRC_TARGET_DIR)/board/generic_arm64/device.mk)
+
+#
+# Special settings for GSI releasing
+#
+#ifeq (aosp_arm64,$(TARGET_PRODUCT))
+$(call inherit-product, $(SRC_TARGET_DIR)/product/gsi_release.mk)
+#endif
+
+#-------------------------------------------------------------------
+
 
 PRODUCT_NAME := rpi4
 PRODUCT_DEVICE := rpi4
@@ -33,6 +69,28 @@ PRODUCT_PROPERTY_OVERRIDES += \
     ro.hardware.vulkan=broadcom \
     wifi.interface=wlan0 \
     ro.rfkilldisabled=1
+
+
+#------------------------------------------------------------------
+
+#PRODUCT_AAPT_CONFIG := normal mdpi hdpi
+#PRODUCT_AAPT_PREF_CONFIG := hdpi
+
+# Graphics
+PRODUCT_PACKAGES += \
+    android.hardware.graphics.allocator@2.0-impl \
+    android.hardware.graphics.allocator@2.0-service \
+    android.hardware.graphics.composer@2.1-impl \
+    android.hardware.graphics.composer@2.1-service \
+    android.hardware.graphics.mapper@2.0-impl-2.1
+
+PRODUCT_PACKAGES += \
+    gralloc.gbm \
+    hwcomposer.drm \
+    libGLES_mesa
+
+#------------------------------------------------
+
 
 # application packages
 PRODUCT_PACKAGES += \
@@ -146,7 +204,7 @@ PRODUCT_COPY_FILES := \
     frameworks/base/data/sounds/effects/ogg/camera_click_48k.ogg:$(TARGET_COPY_OUT_PRODUCT)/media/audio/ui/camera_click.ogg \
     $(PRODUCT_COPY_FILES)
 
-PRODUCT_AAPT_PREF_CONFIG := tvdpi
-PRODUCT_CHARACTERISTICS := tv
+#PRODUCT_AAPT_PREF_CONFIG := tvdpi
+#PRODUCT_CHARACTERISTICS := tv
 
 $(call inherit-product, $(SRC_TARGET_DIR)/product/languages_full.mk)

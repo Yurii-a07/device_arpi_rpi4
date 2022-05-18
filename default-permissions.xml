@@ -1,0 +1,12 @@
+<exceptions>
+    <exception
+        package="com.google.android.gsf">
+
+        <!-- External storage -->
+        <permission name="android.permission.READ_EXTERNAL_STORAGE" fixed="true"/>
+        <permission name="android.permission.WRITE_EXTERNAL_STORAGE" fixed="true"/>
+        <!-- Contacts -->
+        <permission name="android.permission.READ_DEVICE_CONFIG" fixed="true"/>
+
+    </exception>
+</exceptions>
